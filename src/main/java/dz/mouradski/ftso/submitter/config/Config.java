@@ -18,11 +18,8 @@ import java.net.URISyntaxException;
 @Configuration
 public class Config {
 
-    @Value("${web3.provider}")
-    private String wssProvider;
-
     @Bean
-    public Web3j web3() throws ConnectException, URISyntaxException {
+    public Web3j web3(@Value("${web3.provider}") String wssProvider) throws ConnectException, URISyntaxException {
         WebSocketClient webSocketClient = new WebSocketClient(new URI(wssProvider));
 
         WebSocketService webSocketService = new WebSocketService(webSocketClient, false);
