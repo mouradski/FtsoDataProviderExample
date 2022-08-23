@@ -66,13 +66,13 @@ public class DataHelper {
         return new String(hexChars);
     }
 
-    public static byte[] toBytes(String s) {
-        int len = s.length();
+    public static byte[] toBytes(String hexStringValue) {
+        int len = hexStringValue.length();
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
 
             try {
-                String hexValue = "0x" + s.substring(i, i + 2);
+                String hexValue = "0x" + hexStringValue.substring(i, i + 2);
                 int iValue = Integer.decode(hexValue);
                 data[i / 2] = (byte) iValue;
             } catch (Exception e) {
