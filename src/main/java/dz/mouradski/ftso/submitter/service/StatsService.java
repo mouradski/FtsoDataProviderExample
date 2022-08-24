@@ -101,13 +101,13 @@ public class StatsService {
 
                     PriceEpochData priceEpochData = dataEpochService.getCurrentPriceEpochData();
 
-                    BigInteger previousEpochPrice = dataProvider.getPreviousEpochPrice(i);
+                    BigInteger submittedPrice = dataProvider.getPreviousEpochPrice(i);
 
-                    if (previousEpochPrice != null) {
-                        this.log.info("PriceFinalized epochId : {}, Symbol : {}, minPrice : {}, maxPrice : {}, ourPrice : {}", priceEpochData.getPriceEpochId() - 1, dataProvider.getSymbol(i), min, max, previousEpochPrice);
+                    if (submittedPrice != null) {
+                        this.log.info("PriceFinalized epochId : {}, Symbol : {}, minPrice : {}, maxPrice : {}, submittedPrice : {}", priceEpochData.getPriceEpochId() - 1, dataProvider.getSymbol(i), min, max, submittedPrice);
 
-                        if (previousEpochPrice.doubleValue() >= min.doubleValue() && previousEpochPrice.doubleValue() <= max.doubleValue()) {
-                            this.log.info("Bingo !! {} = {}", dataProvider.getSymbol(i), previousEpochPrice);
+                        if (submittedPrice.doubleValue() >= min.doubleValue() && submittedPrice.doubleValue() <= max.doubleValue()) {
+                            this.log.info("Bingo !! {} = {}", dataProvider.getSymbol(i), submittedPrice);
                         }
                     } else {
                         this.log.info("PriceFinalized epochId : {}, Symbol : {}, minPrice : {}, maxPrice : {}", priceEpochData.getPriceEpochId() - 1, dataProvider.getSymbol(i), min, max);
