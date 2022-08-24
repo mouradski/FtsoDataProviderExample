@@ -47,16 +47,13 @@ public class StatsService {
     }
 
     public void loadFtsoContracts() throws ExecutionException, InterruptedException {
-
-        TypeReference<DynamicArray<Address>> oa = new TypeReference<DynamicArray<Address>>() {
-        };
-
-        Function function = new Function(
+        Function getFtsosFunction = new Function(
                 "getFtsos",
                 Arrays.asList(),
-                Arrays.asList(oa));
+                Arrays.asList(new TypeReference<DynamicArray<Address>>() {
+        }));
 
-        String encodedFunction = FunctionEncoder.encode(function);
+        String encodedFunction = FunctionEncoder.encode(getFtsosFunction);
 
         org.web3j.protocol.core.methods.response.EthCall response =
                 web3.ethCall(org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(null, "0xbfA12e4E1411B62EdA8B035d71735667422A6A9e", encodedFunction), DefaultBlockParameterName.LATEST)
@@ -66,7 +63,7 @@ public class StatsService {
                 response.getValue(), function.getOutputParameters());
 
 
-        ArrayList contracts =  ((ArrayList)someTypes.get(0).getValue());
+        ArrayList contracts = ((ArrayList)someTypes.get(0).getValue());
 
         Integer index = 0;
 
@@ -75,7 +72,6 @@ public class StatsService {
             String contract = contractObj.toString();
 
             int i = index.intValue();
-
 
             List<TypeReference<?>> params = Arrays.asList(
                     new TypeReference<Uint256>(true) {},
@@ -89,7 +85,6 @@ public class StatsService {
 
             Event event = new Event("PriceFinalized", params);
 
-
             EthFilter filter = new EthFilter(DefaultBlockParameterName.LATEST, DefaultBlockParameterName.LATEST, contract);
             filter.addSingleTopic(EventEncoder.encode(event));
 
@@ -100,7 +95,6 @@ public class StatsService {
 
                     List<Type> eventParams = FunctionReturnDecoder.decode(
                             log.getData(), event.getIndexedParameters().subList(0,6));
-
 
                     BigInteger min = (BigInteger) eventParams.get(0).getValue();
                     BigInteger max = (BigInteger) eventParams.get(3).getValue();
