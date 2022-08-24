@@ -98,9 +98,6 @@ public class StatsService {
 
                     String symbol = dataProvider.getSymbol(i);
 
-                    if (symbol != null) {
-
-                    }
                     List<Type> eventParams = FunctionReturnDecoder.decode(
                             log.getData(), event.getIndexedParameters().subList(0,6));
 
