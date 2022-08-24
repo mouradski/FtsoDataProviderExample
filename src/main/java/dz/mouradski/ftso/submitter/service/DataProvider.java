@@ -29,8 +29,10 @@ public class DataProvider {
     private String submissionContract;
 
     private Map<Integer, BigInteger> prices = new HashMap<>();
+    private Map<Integer, BigInteger> previosEpochPrices = new HashMap<>();
     private Map<Integer, String> randoms = new HashMap<>();
     private Map<Integer, String> hashes = new HashMap<>();
+    private Map<Integer, String> symbols = new HashMap<>();
 
     private Long submissionEndOffset;
     private Long revealStartOffset;
@@ -42,7 +44,7 @@ public class DataProvider {
                         @Value("${price.submitter.contract}") String submissionContract,
                         @Value("${submission.end.offset}") Long submissionEndOffset,
                         @Value("${reveal.start.offset}") Long revealStartOffset,
-                        @Value("${data.provider.address}") String dataProviderAddress) throws ExecutionException, InterruptedException {
+                        @Value("${data.provider.address}") String dataProviderAddress) {
 
         this.priceProviders = priceProviders;
         this.dataEpochService = dataEpochService;
@@ -54,6 +56,12 @@ public class DataProvider {
         this.dataProviderAddress = dataProviderAddress;
 
         startSubmissionSession();
+
+        initSymbolsMap(priceProviders);
+    }
+
+    private void initSymbolsMap(List<PriceProvider> priceProviders) {
+        priceProviders.forEach(priceService -> symbols.put(priceService.getIndex(), priceService.getSymbol()));
     }
 
     public void startSubmissionSession() {
@@ -143,20 +151,27 @@ public class DataProvider {
                 getPrices(), getRandoms(), submissionContract);
     }
 
+    public BigInteger getPreviousEpochPrice(Integer index) {
+        return previosEpochPrices.get(index);
+    }
 
-    public List<String> getHashes() {
+    public String getSymbol(Integer index) {
+        return symbols.get(index);
+    }
+
+    private List<String> getHashes() {
         return hashes.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(Map.Entry::getValue).collect(Collectors.toList());
     }
 
-    public List<Integer> getIndices() {
+    private List<Integer> getIndices() {
         return hashes.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(Map.Entry::getKey).collect(Collectors.toList());
     }
 
-    public List<BigInteger> getPrices() {
+    private List<BigInteger> getPrices() {
         return prices.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(Map.Entry::getValue).collect(Collectors.toList());
     }
 
-    public List<String> getRandoms() {
+    private List<String> getRandoms() {
         return randoms.entrySet().stream().sorted(Comparator.comparing(Map.Entry::getKey)).map(Map.Entry::getValue).collect(Collectors.toList());
     }
 
