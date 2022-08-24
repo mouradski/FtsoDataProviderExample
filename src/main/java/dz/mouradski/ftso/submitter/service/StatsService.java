@@ -48,22 +48,20 @@ public class StatsService {
 
     public void loadFtsoContracts() throws ExecutionException, InterruptedException {
 
-        TypeReference<DynamicArray<Address>> oa = new TypeReference<DynamicArray<Address>>() {
-        };
-
-        Function function = new Function(
+        Function getFtsosFunction = new Function(
                 "getFtsos",
                 Arrays.asList(),
-                Arrays.asList(oa));
+                Arrays.asList(new TypeReference<DynamicArray<Address>>() {
+                }));
 
-        String encodedFunction = FunctionEncoder.encode(function);
+        String encodedFunction = FunctionEncoder.encode(getFtsosFunction);
 
         org.web3j.protocol.core.methods.response.EthCall response =
                 web3.ethCall(org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(null, "0xbfA12e4E1411B62EdA8B035d71735667422A6A9e", encodedFunction), DefaultBlockParameterName.LATEST)
                         .sendAsync().get();
 
         List<Type> someTypes = FunctionReturnDecoder.decode(
-                response.getValue(), function.getOutputParameters());
+                response.getValue(), getFtsosFunction.getOutputParameters());
 
 
         ArrayList contracts =  ((ArrayList)someTypes.get(0).getValue());
@@ -97,10 +95,7 @@ public class StatsService {
                 try {
 
                     String symbol = dataProvider.getSymbol(i);
-
-                    if (symbol != null) {
-
-                    }
+                    
                     List<Type> eventParams = FunctionReturnDecoder.decode(
                             log.getData(), event.getIndexedParameters().subList(0,6));
 
