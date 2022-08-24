@@ -32,7 +32,7 @@ public class DataEpochService {
     }
 
 
-    private String getFtsoManager() throws ExecutionException, InterruptedException {
+    public String getFtsoManager() throws ExecutionException, InterruptedException {
         org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 "getFtsoManager",
                 Arrays.asList(),

@@ -57,7 +57,7 @@ public class StatsService {
         String encodedFunction = FunctionEncoder.encode(getFtsosFunction);
 
         org.web3j.protocol.core.methods.response.EthCall response =
-                web3.ethCall(org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(null, "0xbfA12e4E1411B62EdA8B035d71735667422A6A9e", encodedFunction), DefaultBlockParameterName.LATEST)
+                web3.ethCall(org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(null, dataEpochService.getFtsoManager(), encodedFunction), DefaultBlockParameterName.LATEST)
                         .sendAsync().get();
 
         List<Type> someTypes = FunctionReturnDecoder.decode(
@@ -95,7 +95,7 @@ public class StatsService {
                 try {
 
                     String symbol = dataProvider.getSymbol(i);
-                    
+
                     List<Type> eventParams = FunctionReturnDecoder.decode(
                             log.getData(), event.getIndexedParameters().subList(0,6));
 
@@ -108,13 +108,13 @@ public class StatsService {
                     BigInteger previousEpochPrice = dataProvider.getPreviousEpochPrice(i);
 
                     if (previousEpochPrice != null) {
-                        this.log.info("PriceFinalized epochId : {}, Symbol : {}, minPrice : {}, maxPrice : {}, ourPrice : {}", priceEpochData.getPriceEpochId() - 1, dataProvider.getSymbol(i), min, max, previousEpochPrice);
+                        this.log.info("  epochId : {}, Symbol : {}, minPrice : {}, maxPrice : {}, ourPrice : {}", priceEpochData.getPriceEpochId() - 1, symbol, min, max, previousEpochPrice);
 
                         if (previousEpochPrice.doubleValue() >= min.doubleValue() && previousEpochPrice.doubleValue() <= max.doubleValue()) {
-                            this.log.info("Bingo !! {} = {}", dataProvider.getSymbol(i), previousEpochPrice);
+                            this.log.info("Bingo !! Good estimation {} = {}", symbol, previousEpochPrice);
                         }
                     } else {
-                        this.log.info("PriceFinalized epochId : {}, Symbol : {}, minPrice : {}, maxPrice : {}", priceEpochData.getPriceEpochId() - 1, dataProvider.getSymbol(i), min, max);
+                        this.log.info("PriceFinalized epochId : {}, Symbol : {}, minPrice : {}, maxPrice : {}", priceEpochData.getPriceEpochId() - 1, symbol, min, max);
 
                     }
                 } catch (Exception e) {
